@@ -5,7 +5,7 @@ import (
 
 	"github.com/globalsign/mgo"
 
-	"github.com/chassis/excel"
+	"github.com/vicsoulz/chassis/excel"
 )
 
 func GridFS(name string) *mgo.GridFS {

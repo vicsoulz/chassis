@@ -1,4 +1,4 @@
-module github.com/chassis
+module github.com/vicsoulz/chassis
 
 go 1.12
 

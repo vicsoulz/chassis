@@ -3,7 +3,7 @@ package mysql
 import (
 	"github.com/jmoiron/sqlx"
 
-	"github.com/chassis/db"
+	"github.com/vicsoulz/chassis/db"
 )
 
 var (
