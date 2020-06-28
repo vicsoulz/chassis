@@ -2,7 +2,6 @@
 .idea
 .DS_Store
 go.sum
-go.mod
 main.go
 vendor
 
