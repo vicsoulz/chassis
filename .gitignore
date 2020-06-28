@@ -1,0 +1,9 @@
+.vscode
+.idea
+go.sum
+go.mod
+main.go
+vendor
+
+config.toml
+.env
