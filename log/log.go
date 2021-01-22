@@ -2,6 +2,7 @@ package log
 
 import (
 	"errors"
+	"github.com/evalphobia/logrus_sentry"
 	"github.com/sirupsen/logrus"
 )
 
@@ -27,22 +28,26 @@ func Init(c *Config) error {
 		l = c.Log
 	}
 
-	initHook()
-	return nil
+	err := initHook()
+	return err
 }
 
-func initHook() {
-	ch := &CallerHook{}
-	if l.Level == logrus.DebugLevel {
-		ch.Level = logrus.AllLevels
-	}
-	l.AddHook(ch)
-
+func initHook() error {
+	l.SetReportCaller(true)
 	if conf.SentryDSN != "" {
-		l.AddHook(&SentryHook{
-			DSN: conf.SentryDSN,
+		hook, err := logrus_sentry.NewSentryHook(conf.SentryDSN, []logrus.Level{
+			logrus.PanicLevel,
+			logrus.FatalLevel,
+			logrus.ErrorLevel,
 		})
+
+		if err != nil {
+			return err
+		}
+		l.Hooks.Add(hook)
+		hook.StacktraceConfiguration.Enable = true
 	}
+	return nil
 }
 
 func Get() *logrus.Logger {
