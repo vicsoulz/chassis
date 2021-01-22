@@ -12,28 +12,28 @@ type Config struct {
 }
 
 var (
-	l    *logrus.Logger
+	Log  *logrus.Logger
 	conf *Config
 )
 
-func Init(c *Config) error {
+func Init(c *Config) (*logrus.Logger, error) {
 	if c == nil {
-		return errors.New("config is nil")
+		return nil, errors.New("config is nil")
 	}
 	conf = c
 
 	if c.Log == nil {
-		l = logrus.New()
+		Log = logrus.New()
 	} else {
-		l = c.Log
+		Log = c.Log
 	}
 
 	err := initHook()
-	return err
+	return Log, err
 }
 
 func initHook() error {
-	l.SetReportCaller(true)
+	Log.SetReportCaller(true)
 	if conf.SentryDSN != "" {
 		hook, err := logrus_sentry.NewSentryHook(conf.SentryDSN, []logrus.Level{
 			logrus.PanicLevel,
@@ -44,68 +44,8 @@ func initHook() error {
 		if err != nil {
 			return err
 		}
-		l.Hooks.Add(hook)
+		Log.Hooks.Add(hook)
 		hook.StacktraceConfiguration.Enable = true
 	}
 	return nil
-}
-
-func Get() *logrus.Logger {
-	return l
-}
-
-func Trace(args ...interface{}) {
-	l.Trace(args)
-}
-
-func Tracef(format string, args ...interface{}) {
-	l.Tracef(format, args...)
-}
-
-func Debug(args ...interface{}) {
-	l.Debug(args)
-}
-
-func Debugf(format string, args ...interface{}) {
-	l.Debugf(format, args...)
-}
-
-func Info(args ...interface{}) {
-	l.Info(args)
-}
-
-func Infof(format string, args ...interface{}) {
-	l.Infof(format, args...)
-}
-
-func Warn(args ...interface{}) {
-	l.Warn(args)
-}
-
-func Warnf(format string, args ...interface{}) {
-	l.Warnf(format, args...)
-}
-
-func Error(args ...interface{}) {
-	l.Error(args)
-}
-
-func Errorf(format string, args ...interface{}) {
-	l.Errorf(format, args...)
-}
-
-func Fatal(args ...interface{}) {
-	l.Fatal(args)
-}
-
-func Fatalf(format string, args ...interface{}) {
-	l.Fatalf(format, args...)
-}
-
-func Panic(args ...interface{}) {
-	l.Panic(args)
-}
-
-func WithFields(fields logrus.Fields) *logrus.Entry {
-	return l.WithFields(fields)
 }
